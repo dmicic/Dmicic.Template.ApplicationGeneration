@@ -1,0 +1,28 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+
+<#+
+
+public class IRepositoryGenerator : CSharpFileGenerator
+{
+	public IRepositoryGenerator(ITextTemplatingEngineHost host, string outputProject, string outputDirectory) 
+		:base(host, outputProject, outputDirectory, "I{0}Repository")
+	{ }
+
+	protected override void GenerateCode(CodeClass domainClass)
+	{
+#>
+using <#= this.OutputProjectName #>.Domain;
+
+namespace <#= this.OutputProjectName #>.Repository
+{
+	public partial interface I<#= domainClass.Name #>Repository : IRepository<<#= domainClass.Name #>>
+	{
+	
+	}
+}
+<#+
+	}
+}
+#>

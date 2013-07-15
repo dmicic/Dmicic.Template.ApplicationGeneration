@@ -1,0 +1,47 @@
+<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ template language="C#" debug="True" #>
+<#@ output extension="cs" #>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="IRepositoryGenerator.ttinclude" #>
+<#@ include file="IApplicationServiceGenerator.ttinclude" #>
+<#@ include file="ApplicationServiceGenerator.ttinclude" #>
+<#@ include file="EnvironmentHelper.ttinclude" #>
+<#@ include file="RepositoryGenerator.ttinclude" #>
+<#@ include file="MultipleOutputHelper.ttinclude" #>
+<#@ include file="CSharpFileGenerator.ttinclude" #>
+<#@ include file="ObjectContextGenerator.ttinclude" #>
+<#@ include file="EntityTypeConfigurationGenerator.ttinclude" #>
+
+<#
+	var namespaceDomain = "Dmicic.Template.ApplicationGeneration.Business.Domain";
+	var projectBusiness = "Dmicic.Template.ApplicationGeneration.Business";
+	var projectDataAccess = "Dmicic.Template.ApplicationGeneration.DataAccess";
+
+	EnvironmentHelper.DeleteGeneratedFiles(projectBusiness);
+	EnvironmentHelper.DeleteGeneratedFiles(projectDataAccess);
+
+	var domainClasses = EnvironmentHelper.GetDomainClasses(projectBusiness, namespaceDomain);
+	var generators = new List<CSharpFileGenerator>() 
+	{
+		new IRepositoryGenerator(Host, projectBusiness, "Repository"), 
+		new IApplicationServiceGenerator(Host, projectBusiness, "ApplicationService"), 
+		new ApplicationServiceGenerator(Host, projectBusiness, "ApplicationService"), 
+		new RepositoryGenerator(Host, projectDataAccess),
+		new EntityTypeConfigurationGenerator(Host, projectDataAccess)
+	};
+
+	foreach (var generator in generators)
+	{
+		foreach (var domainClass in domainClasses)	
+		{
+			generator.GenerateFile(domainClass);
+		}
+		generator.Dispose();
+	}
+
+	var a = new ObjectContextGenerator(Host, projectDataAccess, namespaceDomain);
+	a.GenerateFile(domainClasses, "ObjectContext");
+	a.Dispose();
+
+
+#>

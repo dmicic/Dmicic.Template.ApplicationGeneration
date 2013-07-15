@@ -1,0 +1,96 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+
+<#+
+
+public abstract class CSharpFileGenerator : CSharpTemplate, IDisposable
+{
+	private Manager OutputManager { get; set; }
+	protected string FileNamePattern { get; private set; }
+	public ITextTemplatingEngineHost Host { get; private set; }
+	public string OutputDirectory { get; private set; }
+	public Project OutputProject { get; private set; }
+	public string OutputProjectName { get; private set; }
+		
+	public CSharpFileGenerator(ITextTemplatingEngineHost host, string outputProject, string outputDirectory, string filePattern) 
+	{
+		this.Host = host;
+		this.OutputProject = EnvironmentHelper.GetProject(outputProject);
+		this.OutputProjectName = outputProject;
+		this.CreateGeneratedFolder(outputDirectory);
+		this.OutputDirectory = Path.Combine(this.OutputProject.FullName.Replace(outputProject + ".csproj", string.Empty), outputDirectory, EnvironmentHelper.GeneratedFolderName);
+
+		this.OutputManager = Manager.Create(this.Host, this.OutputDirectory, GenerationEnvironment);
+
+		this.FileNamePattern = filePattern + EnvironmentHelper.GeneratedFileExtension;
+	}
+
+	private void CreateGeneratedFolder(string outputDirectory)
+	{
+		var createGeneratedFolderIfNotExists = new Func<ProjectItems, bool>((projItems) => 
+		{
+			bool folderExists = false;
+
+			foreach (ProjectItem subFolder in projItems)
+			{
+				if (subFolder.Kind == EnvironmentHelper.ItemPhysicalFolderId && subFolder.Name.ToLower() == EnvironmentHelper.GeneratedFolderName.ToLower())
+					folderExists = true;
+			}
+
+			if (!folderExists)
+				projItems.AddFolder(EnvironmentHelper.GeneratedFolderName);
+
+			return folderExists;
+		});
+
+		if (string.IsNullOrWhiteSpace(outputDirectory))
+		{
+			if (createGeneratedFolderIfNotExists(this.OutputProject.ProjectItems))
+				return;
+		}
+
+		foreach (ProjectItem item in this.OutputProject.ProjectItems)
+		{
+			if (item.Kind == EnvironmentHelper.ItemPhysicalFolderId && item.Name.ToLower() == outputDirectory.ToLower())
+			{	
+				if (createGeneratedFolderIfNotExists(item.ProjectItems))
+					return;
+			}
+		}
+	}
+	
+	public void GenerateFile(CodeClass domainClass)
+	{
+		var name = string.Format(FileNamePattern, domainClass.Name);
+		this.OutputManager.StartNewFile(name);
+
+		this.GenerateCode(domainClass);
+
+		this.OutputManager.EndBlock();	
+	}
+
+	public void GenerateFile(IEnumerable<CodeClass> domainClasses, string fileName)
+	{
+		var name = string.Format(FileNamePattern, fileName);
+		this.OutputManager.StartNewFile(name);
+
+		this.GenerateCode(domainClasses);
+
+		this.OutputManager.EndBlock();	
+	}
+
+	protected virtual void GenerateCode(CodeClass domainClass) { }
+	protected virtual void GenerateCode(IEnumerable<CodeClass> domainClasses) { }
+
+	public void Dispose()
+	{
+		this.OutputManager.Process(true,false);
+		
+		foreach (var file in this.OutputManager.generatedFileNames)
+		{		
+			this.OutputProject.ProjectItems.AddFromFile(file);
+		}
+	}
+}
+#>

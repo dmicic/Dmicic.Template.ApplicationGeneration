@@ -1,0 +1,31 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+
+<#+
+
+public class IApplicationServiceGenerator : CSharpFileGenerator
+{
+	public IApplicationServiceGenerator(ITextTemplatingEngineHost host, string outputProject, string outputDirectory) 
+		:base(host, outputProject, outputDirectory, "I{0}ApplicationService")
+	{
+		
+	}
+
+
+	protected override void GenerateCode(CodeClass domainClass)
+	{
+#>
+using <#= this.OutputProjectName #>.Domain;
+
+namespace <#= this.OutputProjectName #>.ApplicationService
+{
+	public partial interface I<#= domainClass.Name #>ApplicationService : IApplicationService<<#= domainClass.Name #>>
+	{
+	
+	}
+}
+<#+
+	}
+}
+#>

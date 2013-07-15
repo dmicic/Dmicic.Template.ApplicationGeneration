@@ -1,0 +1,35 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+
+<#+
+
+public class RepositoryGenerator : CSharpFileGenerator
+{
+	public RepositoryGenerator(ITextTemplatingEngineHost host, string outputProject) 
+		:base(host, outputProject, string.Empty, "{0}Repository")
+	{ }
+
+	protected override void GenerateCode(CodeClass domainClass)
+	{
+#>
+using Dmicic.Template.ApplicationGeneration.Business.Repository;
+using Dmicic.Template.ApplicationGeneration.Business.Domain;
+
+using <#= this.OutputProjectName #>;
+
+namespace <#= this.OutputProjectName #>.Repository
+{
+	public partial class <#= domainClass.Name #>Repository : BaseRepository<<#= domainClass.Name #>>, I<#= domainClass.Name #>Repository
+	{
+		public <#= domainClass.Name #>Repository(IObjectContext context)
+			: base(context)
+		{ }
+	}
+}
+<#+
+	}
+}
+#>

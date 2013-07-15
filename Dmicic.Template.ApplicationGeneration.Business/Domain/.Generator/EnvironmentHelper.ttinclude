@@ -1,0 +1,100 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.IO" #>
+<#@ include file="T4Toolbox.tt" #>
+
+<#+
+public static class EnvironmentHelper
+{
+	public static readonly string GeneratedFileExtension = ".generated.cs";
+	public static readonly string GeneratedFolderName = ".generated";
+	public static readonly string ItemPhysicalFolderId = "{6BB5F8EF-4483-11D3-8BCF-00C04F8EC28C}";
+
+	public static IEnumerable<CodeClass> GetDomainClasses(string projectBusiness, string domainFolder)
+	{
+		var classes = new List<CodeClass>();
+		Project project = EnvironmentHelper.GetProject(projectBusiness);
+		EnvironmentHelper.GetDomainClasses(project.ProjectItems, domainFolder, classes);
+		return classes;
+	}
+
+	private static void GetDomainClasses(ProjectItems items, string domainNamespace, IList<CodeClass> classes)
+	{
+		CodeClass cls;
+		foreach (ProjectItem item in items)
+		{
+			if (item.Kind == EnvironmentHelper.ItemPhysicalFolderId) 
+			{
+				EnvironmentHelper.GetDomainClasses(item.ProjectItems, domainNamespace, classes);
+			}
+			else if (item.FileCodeModel != null)
+			{
+				cls = EnvironmentHelper.FindClass(item.FileCodeModel.CodeElements);
+				if (cls != null && !cls.IsAbstract && cls.FullName.StartsWith(domainNamespace))
+				{
+					classes.Add(cls);
+				}
+			}
+		}
+	}
+
+	public static Project GetProject(string projectName)
+	{
+		foreach(Project project in EnvironmentHelper.GetDte().Solution)
+		{
+			if (project.Name.ToLower() == projectName.ToLower())
+				return project;
+		}
+
+		throw new Exception("Project '" + projectName +"' not found.");
+	}
+
+	public static DTE GetDte()
+	{
+		return (DTE)TransformationContext.Current.GetService(typeof(DTE));
+	}
+
+	public static CodeClass GetClass(string file)
+	{
+		DTE dte = EnvironmentHelper.GetDte();
+		ProjectItem projectItem = dte.Solution.FindProjectItem(file);
+		FileCodeModel codeModel = projectItem.FileCodeModel;
+		return FindClass(codeModel.CodeElements);
+	}
+ 
+	private static CodeClass FindClass(CodeElements elements)
+	{
+		foreach (CodeElement element in elements)
+		{
+		CodeClass codeClass = element as CodeClass;
+		if (codeClass != null) return codeClass;
+		codeClass = FindClass(element.Children);
+		if (codeClass != null) return codeClass;
+		}
+      
+		return null;
+	}
+
+	public static void DeleteGeneratedFiles(string projectName)
+	{
+		Project project = EnvironmentHelper.GetProject(projectName);
+		EnvironmentHelper.DeleteGeneratedFiles(project.ProjectItems);
+	}
+
+	private static void DeleteGeneratedFiles(ProjectItems outputItems)
+	{
+		foreach (ProjectItem item in outputItems)
+		{
+			if (item.Kind == EnvironmentHelper.ItemPhysicalFolderId)
+			{
+				EnvironmentHelper.DeleteGeneratedFiles(item.ProjectItems);
+			}
+			else if (item.FileNames[1].Contains(EnvironmentHelper.GeneratedFileExtension))
+			{
+				item.Delete();
+			}
+		}
+	}
+}
+#>

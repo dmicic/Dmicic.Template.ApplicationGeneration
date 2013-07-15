@@ -1,0 +1,31 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+
+<#+
+
+public class EntityTypeConfigurationGenerator : CSharpFileGenerator
+{
+	public EntityTypeConfigurationGenerator(ITextTemplatingEngineHost host, string outputProject) 
+		:base (host, outputProject, string.Empty, "{0}Configuration")
+	{
+	}
+
+
+	protected override void GenerateCode(CodeClass domainClass)
+	{
+#>
+using System.Data.Entity.ModelConfiguration;
+
+using Dmicic.Template.ApplicationGeneration.Business.Domain;
+
+namespace <#= this.OutputProjectName #>
+{
+	public partial class <#= domainClass.Name #>Configuration : EntityTypeConfiguration<<#= domainClass.Name #>>
+	{
+	}
+}
+<#+
+	}
+}
+#>

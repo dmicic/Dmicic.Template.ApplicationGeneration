@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dmicic.Template.ApplicationGeneration.WebUI", "Dmicic.Template.ApplicationGeneration.WebUI\Dmicic.Template.ApplicationGeneration.WebUI.csproj", "{09791500-2FE2-4749-A1B3-F42C4048AFD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dmicic.Template.ApplicationGeneration.Business", "Dmicic.Template.ApplicationGeneration.Business\Dmicic.Template.ApplicationGeneration.Business.csproj", "{042BC665-47E9-4F18-B206-ADA3D1F08FD9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dmicic.Template.ApplicationGeneration.DataAccess", "Dmicic.Template.ApplicationGeneration.DataAccess\Dmicic.Template.ApplicationGeneration.DataAccess.csproj", "{58E89E93-9C6E-4AC1-9701-56C1F4FCDA70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dmicic.Template.ApplicationGeneration.Bootstrapper", "Dmicic.Template.ApplicationGeneration.Bootstrapper\Dmicic.Template.ApplicationGeneration.Bootstrapper.csproj", "{938E806B-A8A9-486E-88F5-8025CB811418}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{40F1D814-672F-491E-9577-43C360DFE89D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{BCA79C3C-569D-42F8-8A93-310B0D2D459C}"
+	ProjectSection(SolutionItems) = preProject
+		SolutionItems\NuGet\NuGet.exe = SolutionItems\NuGet\NuGet.exe
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{09791500-2FE2-4749-A1B3-F42C4048AFD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09791500-2FE2-4749-A1B3-F42C4048AFD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09791500-2FE2-4749-A1B3-F42C4048AFD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09791500-2FE2-4749-A1B3-F42C4048AFD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{042BC665-47E9-4F18-B206-ADA3D1F08FD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{042BC665-47E9-4F18-B206-ADA3D1F08FD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{042BC665-47E9-4F18-B206-ADA3D1F08FD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{042BC665-47E9-4F18-B206-ADA3D1F08FD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58E89E93-9C6E-4AC1-9701-56C1F4FCDA70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58E89E93-9C6E-4AC1-9701-56C1F4FCDA70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58E89E93-9C6E-4AC1-9701-56C1F4FCDA70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58E89E93-9C6E-4AC1-9701-56C1F4FCDA70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{938E806B-A8A9-486E-88F5-8025CB811418}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{938E806B-A8A9-486E-88F5-8025CB811418}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{938E806B-A8A9-486E-88F5-8025CB811418}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{938E806B-A8A9-486E-88F5-8025CB811418}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BCA79C3C-569D-42F8-8A93-310B0D2D459C} = {40F1D814-672F-491E-9577-43C360DFE89D}
+	EndGlobalSection
+EndGlobal

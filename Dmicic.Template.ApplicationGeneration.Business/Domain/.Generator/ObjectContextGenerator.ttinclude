@@ -1,0 +1,51 @@
+﻿<#@ Assembly Name="EnvDTE" #>
+<#@ import namespace="EnvDTE" #>
+<#@ import namespace="System" #>
+
+<#+
+public class ObjectContextGenerator : CSharpFileGenerator
+{
+	public string DomainNamespace { get; private set; }
+
+	public ObjectContextGenerator(ITextTemplatingEngineHost host, string outputProject, string domainNamespace) 
+		:base (host, outputProject, string.Empty, "{0}")
+	{
+		this.DomainNamespace = domainNamespace;
+	}
+
+
+	protected override void GenerateCode(IEnumerable<CodeClass> domainClasses)
+	{
+#>
+using System.Data.Entity;
+
+using <#= this.DomainNamespace #>;
+
+namespace <#= this.OutputProjectName #>
+{
+	public partial class ObjectContext
+	{
+<#+
+		foreach (CodeClass domainClass in domainClasses)
+		{
+		#>
+		public DbSet<<#= domainClass.Name #>> <#= domainClass.Name #> { get; set; }
+<#+		}#>
+
+		protected override void OnModelCreating(DbModelBuilder modelBuilder)
+		{
+<#+
+		foreach (CodeClass domainClass in domainClasses)
+		{
+		#>
+			modelBuilder.Configurations.Add(new <#= domainClass.Name #>Configuration());
+<#+		}#>
+			
+			base.OnModelCreating(modelBuilder);
+		}
+	}
+}
+<#+
+	}
+}
+#>
