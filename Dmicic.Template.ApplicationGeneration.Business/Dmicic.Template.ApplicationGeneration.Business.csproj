@@ -50,7 +50,6 @@
     <Compile Include="Domain\IUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="Domain\.Generator\ApplicationServiceGenerator.ttinclude" />
     <None Include="Domain\.Generator\App_Generator.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
